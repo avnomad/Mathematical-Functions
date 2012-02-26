@@ -28,6 +28,7 @@ int main()
 		wcout << setw(3) << i << "! = " << setw(result_digits) << factorial(i) << '\n';
 	wcout << " max = " << setw(result_digits) << numeric_limits<decltype(factorial(0))>::max() << "\n\n" << endl;
 
+
 	// test PascalTriangle
 	try
 	{
@@ -59,6 +60,34 @@ int main()
 	{
 		wcerr << "error: " << e.what() << "\n\n" << endl;
 	} // end catch
+
+
+	// test binomialCoefficient
+	for(auto k = 0u ; k < 15 ; k++)
+	{
+		for(auto n = 0u ; n < k ; n++)
+			wcout << setw(5) << "";
+		for(auto n = k ; n < 15 ; n++)
+			wcout << setw(5) << binomialCoefficient(n,k);
+		wcout << '\n';
+	} // end for
+
+
+	// test PascalTriangle and binomialCoefficient
+	const auto max_n = 68u;
+	PascalTriangle pascalTriangle(max_n);
+	for(auto n = 0u ; n <= max_n ; ++n)
+		for(auto k = 0u ; k <= n ; ++k)
+			try{
+				if(pascalTriangle(n,k) != binomialCoefficient(n,k))
+				{
+					wcerr << "error: binomial coefficients computed in 2 different ways do not match." << endl;
+				}
+			}catch(const std::domain_error &e)
+			{
+				wcerr << "error: " << e.what() << "(" << n << "," << k << ")" << endl;
+			} // end catch
+	wcout << "\nbinomial coefficients computed in 2 different ways match\n(when no overflow occurs).\n\n" << endl;
 
 
 	// test exp
