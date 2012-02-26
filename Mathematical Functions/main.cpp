@@ -1,6 +1,7 @@
 #include <iostream>
 using std::wcout;
 using std::wcin;
+using std::wcerr;
 using std::endl;
 
 #include <iomanip>
@@ -26,6 +27,39 @@ int main()
 	for(unsigned int i = 0u ; i <= 20u ; i++)	// should overflow after 20
 		wcout << setw(3) << i << "! = " << setw(result_digits) << factorial(i) << '\n';
 	wcout << " max = " << setw(result_digits) << numeric_limits<decltype(factorial(0))>::max() << "\n\n" << endl;
+
+	// test PascalTriangle
+	try
+	{
+		const auto max_n = 15u;
+		PascalTriangle pascalTriangle(max_n);
+		for(auto k = 0u ; k < max_n ; k++)
+		{
+			for(auto n = 0u ; n < k ; n++)
+				wcout << setw(5) << "";
+			for(auto n = k ; n < max_n ; n++)
+				wcout << setw(5) << pascalTriangle(n,k);
+			wcout << '\n';
+		} // end for
+		wcout << endl;
+
+		//wcout << pascalTriangle(-1,0) << endl; will throw
+		//wcout << pascalTriangle(-1,-1) << endl; will throw
+		//wcout << pascalTriangle(0,1) << endl; will throw
+	}
+	catch(const std::out_of_range &e)
+	{
+		wcerr << "error: " << e.what() << "\n\n" << endl;
+	} // end catch
+	catch(const std::length_error &e)
+	{
+		wcerr << "error: " << e.what() << "\n\n" << endl;
+	} // end catch
+	catch(const std::bad_alloc &e)
+	{
+		wcerr << "error: " << e.what() << "\n\n" << endl;
+	} // end catch
+
 
 	// test exp
 	wcout << std::fixed << setprecision(12);
