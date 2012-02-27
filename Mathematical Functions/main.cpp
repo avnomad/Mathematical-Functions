@@ -15,6 +15,9 @@ using std::system;
 
 #include <Math/mathematical functions.h>
 using namespace Math::MathematicalFunctions;
+#include <StopWatch.h>
+#undef min
+#undef max
 
 #include <limits>
 using std::numeric_limits;
@@ -74,21 +77,28 @@ int main()
 
 
 	// test PascalTriangle and binomialCoefficient
-	const auto max_n = 68u;
+	auto i = 0u;
+	StopWatch timer;
+	const auto max_n = 67u;
+	timer.push();
 	PascalTriangle pascalTriangle(max_n);
+	std::cout << "Duration: " << timer.pop() << timer.getUnit() << "\n\n" << endl;
+	timer.push();
 	for(auto n = 0u ; n <= max_n ; ++n)
 		for(auto k = 0u ; k <= n ; ++k)
 			try{
 				if(pascalTriangle(n,k) != binomialCoefficient(n,k))
 				{
-					wcerr << "error: binomial coefficients computed in 2 different ways do not match." << endl;
+					i++;
+					//wcerr << "error: binomial coefficients computed in 2 different ways do not match." << endl;
 				}
 			}catch(const std::domain_error &e)
 			{
-				wcerr << "error: " << e.what() << "(" << n << "," << k << ")" << endl;
+				//wcerr << "error: " << e.what() << "(" << n << "," << k << ")" << endl;
 			} // end catch
-	wcout << "\nbinomial coefficients computed in 2 different ways match\n(when no overflow occurs).\n\n" << endl;
-
+	//wcout << "\nbinomial coefficients computed in 2 different ways match\n(when no overflow occurs).\n\n" << endl;
+	std::cout << "Duration: " << timer.pop() << timer.getUnit() << "\n\n" << endl;
+	wcout << i << endl;
 
 	// test exp
 	wcout << std::fixed << setprecision(12);
