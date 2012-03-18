@@ -85,7 +85,7 @@ int main()
 				}
 			}catch(const std::domain_error &e)
 			{
-				wcerr << "error: " << e.what() << "(" << n << "," << k << ")" << endl;
+				wcerr << "error: " << e.what() << " (" << n << "," << k << ")" << endl;
 			} // end catch
 	wcout << "\nbinomial coefficients computed in 2 different ways match\n(when no overflow occurs).\n\n" << endl;
 
