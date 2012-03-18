@@ -92,8 +92,8 @@ int main()
 					i++;
 					//wcerr << "error: binomial coefficients computed in 2 different ways do not match." << endl;
 				}
-			}catch(const std::domain_error &e)
-			{
+			}catch(const std::domain_error &e){
+				i++;
 				//wcerr << "error: " << e.what() << "(" << n << "," << k << ")" << endl;
 			} // end catch
 	//wcout << "\nbinomial coefficients computed in 2 different ways match\n(when no overflow occurs).\n\n" << endl;
