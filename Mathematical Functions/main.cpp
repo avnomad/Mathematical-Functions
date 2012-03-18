@@ -89,7 +89,14 @@ int main()
 			} // end catch
 	wcout << "\nbinomial coefficients computed in 2 different ways match\n(when no overflow occurs).\n\n" << endl;
 
-
+	// test pi
+	const auto Pi = 3.1415926535897932384626433832795;
+	wcout << std::scientific;
+	wcout << "double precision arithmetic epsilon: " << numeric_limits<double>::epsilon() << endl;
+	for(auto acc = 1e-5 ; acc >= 1e-9 ; acc/=10)	// smaller values for accuracy may take a lot of time to compute.
+		wcout << "With accuracy " << setprecision(1) <<  acc << " pi is approximated with an error of " << setprecision(3) << fabs(pi(acc)-Pi) << endl;
+	wcout << "\n\n";
+	
 	// test exp
 	wcout << std::fixed << setprecision(12);
 	wcout << exp(20,1e-30)<< endl;
