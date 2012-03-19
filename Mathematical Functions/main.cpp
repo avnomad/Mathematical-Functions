@@ -93,14 +93,28 @@ int main()
 	const auto Pi = 3.1415926535897932384626433832795;
 	wcout << std::scientific;
 	wcout << "double precision arithmetic epsilon: " << numeric_limits<double>::epsilon() << endl;
-	for(auto acc = 1e-5 ; acc >= 1e-9 ; acc/=10)	// smaller values for accuracy may take a lot of time to compute.
+	for(auto acc = 1e-5 ; acc >= 1e-7 ; acc/=10)	// smaller values for accuracy may take a lot of time to compute.
 		wcout << "With accuracy " << setprecision(1) <<  acc << " pi is approximated with an error of " << setprecision(3) << fabs(pi(acc)-Pi) << endl;
 	wcout << "\n\n";
 	
 	// test exp
-	wcout << std::fixed << setprecision(12);
-	wcout << exp(20,1e-30)<< endl;
-	wcout << std::exp(20.0)<< endl;
+	for(auto x = -20.0 ; x <= 0.0 ; x += 0.50)
+	{
+		wcout << "std::exp(" << setprecision(2) << x << ") = " << setprecision(18) << exp(x) << endl;
+		wcout << "     exp(" << setprecision(2) << x << ") = " << setprecision(18) << exp(x,1e-20) << endl;
+	}
+	wcout << "\n\n";
+
+	const double accuracy = 1e-10;
+	for(auto x = -15.0 ; x <= 15.0 ; x += 0.20)
+	{
+		if(fabs(exp(x) - exp(x,accuracy)) > accuracy)
+		{
+			wcout << "Error exceeds accuracy!!!" << endl;
+			wcout << "std::exp(" << setprecision(2) << x << ") = " << setprecision(18) << exp(x) << endl;
+			wcout << "     exp(" << setprecision(2) << x << ") = " << setprecision(18) << exp(x,accuracy) << endl;
+		} // end if
+	}
 
 	system("pause");
 	return 0;
