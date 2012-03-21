@@ -60,6 +60,14 @@ int main()
 	{
 		wcerr << "error: " << e.what() << "\n\n" << endl;
 	} // end catch
+	try
+	{
+		PascalTriangle pascalTriangle(68);
+	}
+	catch(const std::domain_error &e)
+	{
+		wcout << "Correctly throws domain_error: \"" << e.what() << "\"\nwhen trying to instantiate with large n.\n\n" << endl;
+	} // end catch
 
 
 	// test binomialCoefficient
@@ -74,7 +82,7 @@ int main()
 
 
 	// test PascalTriangle and binomialCoefficient
-	const auto max_n = 68u;
+	const auto max_n = 67u;
 	PascalTriangle pascalTriangle(max_n);
 	for(auto n = 0u ; n <= max_n ; ++n)
 		for(auto k = 0u ; k <= n ; ++k)
@@ -89,6 +97,7 @@ int main()
 			} // end catch
 	wcout << "\nbinomial coefficients computed in 2 different ways match\n(when no overflow occurs).\n\n" << endl;
 
+
 	// test pi
 	const auto Pi = 3.1415926535897932384626433832795;
 	wcout << std::scientific;
@@ -96,7 +105,8 @@ int main()
 	for(auto acc = 1e-5 ; acc >= 1e-7 ; acc/=10)	// smaller values for accuracy may take a lot of time to compute.
 		wcout << "With accuracy " << setprecision(1) <<  acc << " pi is approximated with an error of " << setprecision(3) << fabs(pi(acc)-Pi) << endl;
 	wcout << "\n\n";
-	
+
+
 	// test exp
 	for(auto x = -20.0 ; x <= 0.0 ; x += 0.50)
 	{
