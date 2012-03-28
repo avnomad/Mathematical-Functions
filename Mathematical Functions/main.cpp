@@ -129,18 +129,21 @@ int main()
 
 
 	// test BernsteinPolynomial
+	auto mismatches = 0u;
 	for(auto n = 0 ; n <= 20 ; n++)
 		for(auto i = 0 ; i <= n ; i++)
 			for(auto x = 0.0 ; x <= 1.0 ; x += 0.1)
 			{
 				double t = BernsteinPolynomial(i,n,x);
 				double f = binomialCoefficient(n,i)*pow(x,i)*pow(1-x,n-i);
-				if(2*fabs(t-f)/(t+f) > 1e-15)
+				if(2*fabs(t-f)/(t+f) > 1e-15)	// condition is never satisfied with 1e-14
 				{
 					wcout << "triangle method: " << t << endl;
 					wcout << "formula method:  " << f << endl;
+					mismatches++;
 				} // end if
 			} // end for
+	wcout << "mismatches = " << mismatches << "\n\n" << endl;
 
 
 	system("pause");
