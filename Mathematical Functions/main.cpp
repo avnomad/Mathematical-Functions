@@ -13,6 +13,12 @@ using std::system;
 
 #include <cmath>
 
+#include <array>
+using std::array;
+
+#include <vector>
+using std::vector;
+
 #include <Math/mathematical functions.h>
 using namespace Math::MathematicalFunctions;
 
@@ -136,17 +142,70 @@ int main()
 
 	// test BernsteinPolynomial
 	auto mismatches = 0u;
-	for(auto n = 0 ; n <= 20 ; n++)
+	const auto size = 20+1;
+	const auto samples = 11;
+	array<array<array<double,samples>,size>,size> formulaBernstein;
+	array<array<array<double,samples>,size>,size> recursiveBernstein;
+	array<array<array<double,samples>,size>,size> fastRecursiveBernstein;
+	vector<double> storage(size);
+
+	for(auto n = 0 ; n < size ; n++)
 		for(auto i = 0 ; i <= n ; i++)
-			for(auto x = 0.0 ; x <= 1.0 ; x += 0.1)
+		{
+			double x = 0.0;
+			for(auto s = 0 ; s < samples ; s++)
 			{
-				double t = BernsteinPolynomial(i,n,x);
-				double f = binomialCoefficient(n,i)*pow(x,i)*pow(1-x,n-i);
+				formulaBernstein[n][i][s] = binomialCoefficient(n,i)*pow(x,i)*pow(1-x,n-i);
+				x += (1.0-0.0)/(samples-1);
+			} // end for
+		} // end for
+
+	for(auto n = 0 ; n < size ; n++)
+		for(auto i = 0 ; i <= n ; i++)
+		{
+			double x = 0.0;
+			for(auto s = 0 ; s < samples ; s++)
+			{
+				recursiveBernstein[n][i][s] = BernsteinPolynomial(i,n,x);
+				x += (1.0-0.0)/(samples-1);
+			} // end for
+		} // end for
+
+	for(auto n = 0 ; n < size ; n++)
+		for(auto i = 0 ; i <= n ; i++)
+		{
+			double x = 0.0;
+			for(auto s = 0 ; s < samples ; s++)
+			{
+				fastRecursiveBernstein[n][i][s] = BernsteinPolynomial(i,n,x,storage);
+				x += (1.0-0.0)/(samples-1);
+			} // end for
+		} // end for
+
+	for(auto n = 0 ; n < size ; n++)
+		for(auto i = 0 ; i <= n ; i++)
+			for(auto s = 0 ; s < samples ; s++)
+			{
+				double t = recursiveBernstein[n][i][s];
+				double f = formulaBernstein[n][i][s];
 				if(2*fabs(t-f)/(t+f) > 1e-15)	// condition is never satisfied with 1e-14
 				{
 					wcout << "triangle method: " << t << endl;
 					wcout << "formula method:  " << f << endl;
 					mismatches++;
+				} // end if
+			} // end for
+	wcout << "\nmismatches = " << mismatches << "\n\n" << endl;
+	mismatches = 0;
+	for(auto n = 0 ; n < size ; n++)
+		for(auto i = 0 ; i <= n ; i++)
+			for(auto s = 0 ; s < samples ; s++)
+			{
+				double t = recursiveBernstein[n][i][s];
+				double f = fastRecursiveBernstein[n][i][s];
+				if(2*fabs(t-f)/(t+f) > 1e-20)
+				{
+					wcout << "Error: proxy function returns different result than real function!" << endl;
 				} // end if
 			} // end for
 	wcout << "\nmismatches = " << mismatches << "\n\n" << endl;
