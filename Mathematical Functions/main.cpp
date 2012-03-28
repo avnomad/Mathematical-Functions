@@ -27,6 +27,11 @@ using std::numeric_limits;
 
 #include <crtdbg.h>
 
+#include <StopWatch.h>
+#undef min
+#undef max
+
+
 int main()
 {
 	// enable head checks
@@ -141,14 +146,16 @@ int main()
 
 
 	// test BernsteinPolynomial
-	auto mismatches = 0u;
 	const auto size = 20+1;
 	const auto samples = 11;
 	array<array<array<double,samples>,size>,size> formulaBernstein;
 	array<array<array<double,samples>,size>,size> recursiveBernstein;
 	array<array<array<double,samples>,size>,size> fastRecursiveBernstein;
 	vector<double> storage(size);
+	StopWatch sw;
+	double t;
 
+	sw.push();
 	for(auto n = 0 ; n < size ; n++)
 		for(auto i = 0 ; i <= n ; i++)
 		{
@@ -159,7 +166,10 @@ int main()
 				x += (1.0-0.0)/(samples-1);
 			} // end for
 		} // end for
+	t = sw.pop();
+	std::cout << "formula method's elapsed time: " << t << sw.getUnit() << endl;
 
+	sw.push();
 	for(auto n = 0 ; n < size ; n++)
 		for(auto i = 0 ; i <= n ; i++)
 		{
@@ -170,18 +180,27 @@ int main()
 				x += (1.0-0.0)/(samples-1);
 			} // end for
 		} // end for
+	t = sw.pop();
+	std::cout << "recursive method's elapsed time: " << t << sw.getUnit() << endl;
 
+	sw.push();
 	for(auto n = 0 ; n < size ; n++)
 		for(auto i = 0 ; i <= n ; i++)
 		{
 			double x = 0.0;
 			for(auto s = 0 ; s < samples ; s++)
 			{
+				for(auto j = 0 ; j <= n ; j++)
+					storage[j] = 0.0;
 				fastRecursiveBernstein[n][i][s] = BernsteinPolynomial(i,n,x,storage);
 				x += (1.0-0.0)/(samples-1);
 			} // end for
 		} // end for
+	t = sw.pop();
+	std::cout << "fast recursive method's elapsed time: " << t << sw.getUnit() << endl;
+	std::cout << "\n\n";
 
+	auto mismatches = 0u;
 	for(auto n = 0 ; n < size ; n++)
 		for(auto i = 0 ; i <= n ; i++)
 			for(auto s = 0 ; s < samples ; s++)
@@ -196,7 +215,7 @@ int main()
 				} // end if
 			} // end for
 	wcout << "\nmismatches = " << mismatches << "\n\n" << endl;
-	mismatches = 0;
+	mismatches = 0u;
 	for(auto n = 0 ; n < size ; n++)
 		for(auto i = 0 ; i <= n ; i++)
 			for(auto s = 0 ; s < samples ; s++)
