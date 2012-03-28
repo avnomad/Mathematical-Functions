@@ -125,6 +125,23 @@ int main()
 			wcout << "     exp(" << setprecision(2) << x << ") = " << setprecision(18) << exp(x,accuracy) << endl;
 		} // end if
 	}
+	wcout << "\n\n";
+
+
+	// test BernsteinPolynomial
+	for(auto n = 0 ; n <= 20 ; n++)
+		for(auto i = 0 ; i <= n ; i++)
+			for(auto x = 0.0 ; x <= 1.0 ; x += 0.1)
+			{
+				double t = BernsteinPolynomial(i,n,x);
+				double f = binomialCoefficient(n,i)*pow(x,i)*pow(1-x,n-i);
+				if(2*fabs(t-f)/(t+f) > 1e-15)
+				{
+					wcout << "triangle method: " << t << endl;
+					wcout << "formula method:  " << f << endl;
+				} // end if
+			} // end for
+
 
 	system("pause");
 	return 0;
