@@ -19,8 +19,14 @@ using namespace Math::MathematicalFunctions;
 #include <limits>
 using std::numeric_limits;
 
+#include <crtdbg.h>
+
 int main()
 {
+	// enable head checks
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF|_CRTDBG_CHECK_ALWAYS_DF|_CRTDBG_LEAK_CHECK_DF/*|_CRTDBG_CHECK_CRT_DF*/);
+	_CrtSetReportMode(_CRT_WARN,_CRTDBG_MODE_WNDW);
+
 	// test factorial
 	const auto result_digits = numeric_limits<decltype(factorial(0))>::digits10+1;
 
@@ -143,7 +149,7 @@ int main()
 					mismatches++;
 				} // end if
 			} // end for
-	wcout << "mismatches = " << mismatches << "\n\n" << endl;
+	wcout << "\nmismatches = " << mismatches << "\n\n" << endl;
 
 
 	system("pause");
