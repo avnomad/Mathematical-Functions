@@ -190,8 +190,8 @@ int main()
 			double x = 0.0;
 			for(auto s = 0 ; s < samples ; s++)
 			{
-				for(auto j = 0 ; j <= n ; j++)
-					storage[j] = 0.0;
+				//for(auto j = 0 ; j <= n ; j++)
+				//	storage[j] = 0.0;
 				fastRecursiveBernstein[n][i][s] = BernsteinPolynomial(i,n,x,storage);
 				x += (1.0-0.0)/(samples-1);
 			} // end for
