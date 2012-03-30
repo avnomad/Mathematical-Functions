@@ -56,6 +56,7 @@ int main()
 		} // end for
 		wcout << endl;
 
+		//pascalTriangle = PascalTriangle(5);	// error: cannot access private member declared in class 'Math::MathematicalFunctions::BaseTriangle
 		//wcout << pascalTriangle(-1,0) << endl; will throw
 		//wcout << pascalTriangle(-1,-1) << endl; will throw
 		//wcout << pascalTriangle(0,1) << endl; will throw
@@ -140,15 +141,16 @@ int main()
 	wcout << "\n\n";
 
 
-	// test BernsteinPolynomial
-	auto mismatches = 0u;
+	// test BernsteinPolynomial and BernsteinTriangle
 	const auto size = 20+1;
 	const auto samples = 11;
 	array<array<array<double,samples>,size>,size> formulaBernstein;
 	array<array<array<double,samples>,size>,size> recursiveBernstein;
 	array<array<array<double,samples>,size>,size> fastRecursiveBernstein;
+	array<array<array<double,samples>,size>,size> triangleBernstein;
 	vector<double> storage(size);
 
+	// formula
 	for(auto n = 0 ; n < size ; n++)
 		for(auto i = 0 ; i <= n ; i++)
 		{
@@ -160,6 +162,7 @@ int main()
 			} // end for
 		} // end for
 
+	// recursive
 	for(auto n = 0 ; n < size ; n++)
 		for(auto i = 0 ; i <= n ; i++)
 		{
@@ -171,6 +174,7 @@ int main()
 			} // end for
 		} // end for
 
+	// fast recursive
 	for(auto n = 0 ; n < size ; n++)
 		for(auto i = 0 ; i <= n ; i++)
 		{
@@ -182,20 +186,34 @@ int main()
 			} // end for
 		} // end for
 
+	// triangle
+	double x = 0.0;
+	for(auto s = 0 ; s < samples ; s++)
+	{
+		BernsteinTriangle bernsteinTriangle(x,size-1);
+		for(auto n = 0 ; n < size ; n++)
+			for(auto i = 0 ; i <= n ; i++)
+				 triangleBernstein[n][i][s] = bernsteinTriangle(n,i);
+		x += (1.0-0.0)/(samples-1);
+	} // end for
+
+	// formula vs recursive
+	auto mismatches = 0u;
 	for(auto n = 0 ; n < size ; n++)
 		for(auto i = 0 ; i <= n ; i++)
 			for(auto s = 0 ; s < samples ; s++)
 			{
-				double t = recursiveBernstein[n][i][s];
+				double r = recursiveBernstein[n][i][s];
 				double f = formulaBernstein[n][i][s];
-				if(2*fabs(t-f)/(t+f) > 1e-15)	// condition is never satisfied with 1e-14
+				if(2*fabs(r-f)/(r+f) > 1e-15)	// condition is never satisfied with 1e-14
 				{
-					wcout << "triangle method: " << t << endl;
-					wcout << "formula method:  " << f << endl;
+					wcout << "recursive method: " << r << endl;
+					wcout << "formula method:   " << f << endl;
 					mismatches++;
 				} // end if
 			} // end for
 	wcout << "\nmismatches = " << mismatches << "\n\n" << endl;
+	// recursive vs fast recursive
 	mismatches = 0;
 	for(auto n = 0 ; n < size ; n++)
 		for(auto i = 0 ; i <= n ; i++)
@@ -206,10 +224,26 @@ int main()
 				if(2*fabs(t-f)/(t+f) > 1e-20)
 				{
 					wcout << "Error: proxy function returns different result than real function!" << endl;
+					mismatches++;
 				} // end if
 			} // end for
 	wcout << "\nmismatches = " << mismatches << "\n\n" << endl;
-
+	// fast recursive vs triangle
+	mismatches = 0u;
+	for(auto n = 0 ; n < size ; n++)
+		for(auto i = 0 ; i <= n ; i++)
+			for(auto s = 0 ; s < samples ; s++)
+			{
+				double t = triangleBernstein[n][i][s];
+				double fr = fastRecursiveBernstein[n][i][s];
+				if(2*fabs(t-fr)/(t+fr) > 1e-20)
+				{
+					wcout << "triangle method:       " << t << endl;
+					wcout << "fast recursive method: " << fr << endl;
+					mismatches++;
+				} // end if
+			} // end for
+	wcout << "\nmismatches = " << mismatches << "\n\n" << endl;
 
 	system("pause");
 	return 0;
